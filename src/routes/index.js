@@ -8,4 +8,13 @@ router.get('/', (req, res) => {
     res.sendFile(views + '/index.html');
 });
 
+router.get('/register', (req, res) => {
+    res.sendFile(views + '/register.html');
+}); 
+
+//reenvio a la pagina principal
+router.post('/register', (req, res) => {
+    res.sendFile(views + '/index.html')
+});
+
 module.exports = router;

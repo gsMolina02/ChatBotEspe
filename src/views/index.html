@@ -3,12 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href=css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/register.css">    
     <title>ESPE CHAT</title>
 </head>
 <body>
-<h1>ESPE CHAT</h1>
+ <header>   
+    <h1>ESPE CHAT</h1>
+ </header>   
+ 
 <p>Bienvenido a ESPE CHAT, la aplicación de chat en tiempo real</p>
+<div class="input-group">   
+    <div class="button-container">   
+        <button id="chat-bot" class="btn btn-primary">Ir al registro del chat</button>
+    </div> 
+</div>
+
 <script src="/socket.io/socket.io.js"></script>
 <script src="js/script.js"></script>
 </body>
