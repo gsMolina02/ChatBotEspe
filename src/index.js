@@ -1,5 +1,6 @@
 const express = require('express');
 const { createServer } = require('http');
+const realTimeServer = require('./realTimeServer');
 const path = require('path');
 
 const app = express();
@@ -15,3 +16,5 @@ app.use(express.static(path.join(__dirname,'public')));
 httpserver.listen(app.get('port'), () => {
     console.log('La aplicacion esta corriendo en el pueto: ', app.get('port'));
 });
+
+realTimeServer(httpserver);
