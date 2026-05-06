@@ -1,0 +1,19 @@
+{
+  "name": "espechat",
+  "version": "1.0.0",
+  "description": "Proyecto Unidad 1 Sockets",
+  "license": "ISC",
+  "author": "Steven Molina",
+  "type": "commonjs",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "socket.io": "^4.8.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
