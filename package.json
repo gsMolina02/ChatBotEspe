@@ -7,14 +7,20 @@
   "type": "commonjs",
   "main": "src/index.js",
   "scripts": {
-    "start": "nodemon src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest --testEnvironment node"
   },
   "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "emoji-picker-element": "^1.29.1",
     "express": "^5.2.1",
+    "multer": "^2.1.1",
     "socket.io": "^4.8.3"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "jest": "^30.4.2",
+    "nodemon": "^3.1.14",
+    "socket.io-client": "^4.8.3"
   }
 }

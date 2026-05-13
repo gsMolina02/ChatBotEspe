@@ -1,15 +1,11 @@
-const login = document.getElementById('login');
-login.addEventListener('click', () => {
-    const user = document.getElementById('username').value;
-    if(user !== ''){
-        document.cookie = `username=${user}`;
-        window.location.href = '/';
-    }else{
-        alert('Ingrese un nombre de usuario');
-    }
-});
+const avatarInput = document.getElementById('avatar');
+const avatarPreview = document.getElementById('avatar-preview');
 
-const registrochat = document.getElementById('chat-bot');
-registrochat.addEventListener('click', () => {
-    window.location.href = '/register';
+avatarInput.addEventListener('change', () => {
+    const file = avatarInput.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => { avatarPreview.src = e.target.result; };
+        reader.readAsDataURL(file);
+    }
 });

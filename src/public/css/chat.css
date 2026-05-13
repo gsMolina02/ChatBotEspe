@@ -1,0 +1,151 @@
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+#all-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 25px;
+  background-color: #ffffff;
+  min-height: 0;
+}
+
+.message {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.message-input {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.message-input .image-container {
+  width: 50px;
+  align-items: flex-start;
+}
+
+.message-input .message-body {
+  margin-left: 10px;
+  width: calc(100% - 50px);
+}
+
+.message .image-container {
+  flex: 0 0 56px;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.message .image-container img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+}
+
+.message .message-body {
+  flex: 1;
+}
+
+.message .message-body .user-info {
+  font-weight: bold;
+  color: #006633; /* Verde institucional */
+}
+
+.message .message-body .user-info .time {
+  color: #ffd700; /* Amarillo institucional */
+  font-size: 13px;
+}
+
+.message .message-body p {
+  margin-top: 5px;
+  color: #333333; /* Texto más legible sobre fondo blanco */
+  font-size: 14px;
+}
+
+.notification {
+  text-align: center;
+  font-size: 13px;
+  color: #888888;
+  margin: 10px 0;
+  padding: 4px 12px;
+  background-color: #f0f0f0;
+  border-radius: 12px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.typing-indicator {
+  padding: 4px 25px;
+  font-size: 13px;
+  color: #006633;
+  font-style: italic;
+  min-height: 22px;
+}
+
+.emoji-picker-container {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  z-index: 10;
+}
+
+.emoji-picker-container.hidden {
+  display: none;
+}
+
+.input-group {
+  position: relative;
+}
+
+#emoji-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 8px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+#emoji-btn:hover {
+  color: #ffd700;
+}
+
+.send-message {
+  background: #006633; /* Verde institucional */
+  padding: 10px;
+  display: flex;
+}
+
+.send-message input {
+  width: 100%;
+  padding: 7px 5px;
+  border: 1px solid #006633; /* Borde verde */
+  border-radius: 4px;
+  outline: none;
+}
+
+.send-message button {
+  margin-left: 10px;
+  background-color: #ffd700; /* Amarillo institucional */
+  color: #000000; /* Texto negro para contraste */
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  padding: 7px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.send-message button:hover {
+  background-color: #006633; /* Verde institucional al hover */
+  color: #ffffff; /* Texto blanco */
+}
