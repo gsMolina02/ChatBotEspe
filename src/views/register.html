@@ -8,23 +8,29 @@
     <title>Registrate</title>
 </head>
 <body>
-    <header>   
+    <header>
         <h1>ESPE CHAT</h1>
-    </header> 
+    </header>
     <main>
-        <form action="#" method="post" class="card">
+        <form action="/register" method="POST" enctype="multipart/form-data" class="card" id="register-form">
+            <div class="avatar-upload">
+                <img id="avatar-preview" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Vista previa">
+                <label for="avatar" class="avatar-label">Seleccionar foto de perfil</label>
+                <input type="file" id="avatar" name="avatar" accept="image/*" hidden>
+            </div>
             <div class="input-group">
                 <label for="username">Ingresa tu nombre de usuario</label>
-                <input type="text" id="username"/>
+                <input type="text" id="username" name="username" required/>
             </div>
             <div class="input-group">
                 <div class="button-container">
                     <button type="submit" class="btn btn-primary" id="login">
                         Entrar al chat
                     </button>
+                </div>
             </div>
         </form>
     </main>
     <script src="js/register.js"></script>
-    </body>
+</body>
 </html>

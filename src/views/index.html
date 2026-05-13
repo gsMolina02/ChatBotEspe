@@ -3,22 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/register.css">    
+    <link rel="stylesheet" href="css/chat.css">    
     <title>ESPE CHAT</title>
 </head>
 <body>
- <header>   
+ <header>
     <h1>ESPE CHAT</h1>
- </header>   
- 
-<p>Bienvenido a ESPE CHAT, la aplicación de chat en tiempo real</p>
-<div class="input-group">   
-    <div class="button-container">   
-        <button id="chat-bot" class="btn btn-primary">Ir al registro del chat</button>
-    </div> 
+    <a href="/logout" id="logout-btn" title="Salir del chat">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+    </a>
+ </header>
+ <div class="chat-container">
+    <div id="all-messages" class="messages">
+        <!-- Aquí se mostrarán los mensajes del chat -->
+    </div>
+<div id="typing-indicator" class="typing-indicator"></div>
+<div class="input-group">
+    <div id="emoji-picker-container" class="emoji-picker-container hidden">
+        <emoji-picker></emoji-picker>
+    </div>
+    <div class="send-message">
+        <button id="emoji-btn" type="button" title="Emojis">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+                <line x1="9" y1="9" x2="9.01" y2="9"/>
+                <line x1="15" y1="9" x2="15.01" y2="9"/>
+            </svg>
+        </button>
+        <input type="text" placeholder="Escribe tu mensaje aquí..." id="message-input">
+        <button id="send-message" class="btn btn-secondary">Enviar</button>
+    </div>
 </div>
 
+<script type="module" src="/emoji-picker-element/index.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="js/script.js"></script>
 </body>
