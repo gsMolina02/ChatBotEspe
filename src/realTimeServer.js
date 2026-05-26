@@ -1,4 +1,4 @@
-//Conexion bidireccional
+const { registerHandlers } = require('./handlers/socketHandlers');
 
 const parseCookies = (cookieHeader = '') => {
     return cookieHeader.split(';').reduce((acc, pair) => {
@@ -9,7 +9,7 @@ const parseCookies = (cookieHeader = '') => {
 };
 
 module.exports = httpserver => {
-    const {Server} = require('socket.io');
+    const { Server } = require('socket.io');
     const io = new Server(httpserver);
 
     io.on('connection', (socket) => {
@@ -17,27 +17,11 @@ module.exports = httpserver => {
         const user = cookies.username;
         const avatar = cookies.avatar;
 
-        socket.broadcast.emit('userJoined', { user });
+        if (!user) {
+            socket.disconnect(true);
+            return;
+        }
 
-        socket.on('disconnect', () => {
-            socket.broadcast.emit('userLeft', { user });
-        });
-
-        socket.on('message', (message) => {
-            io.emit('message', {
-                user,
-                avatar,
-                message,
-                timestamp: new Date().toLocaleTimeString()
-            });
-        });
-
-        socket.on('typing', () => {
-            socket.broadcast.emit('typing', { user });
-        });
-
-        socket.on('stopTyping', () => {
-            socket.broadcast.emit('stopTyping');
-        });
+        registerHandlers(io, socket, user, avatar);
     });
 };

@@ -44,6 +44,7 @@ messageInput.addEventListener('input', () => {
 });
 
 send.addEventListener('click', () => {
+    if (!messageInput.value.trim()) return;
     socket.emit('message', messageInput.value);
     socket.emit('stopTyping');
     clearTimeout(typingTimeout);
@@ -73,21 +74,39 @@ socket.on('stopTyping', () => {
     typingIndicator.textContent = '';
 });
 
-socket.on('message', ({user, avatar, message, timestamp}) => {
+socket.on('message', ({ user, avatar, message, timestamp }) => {
     typingIndicator.textContent = '';
-    const msg = document.createRange().createContextualFragment(`
-        <div class="message">
-        <div class="image-container">
-        <img src="${avatar}" alt="${user}">
-        </div>
-        <div class="message-body">
-        <div class="user-info">
-        <span class="username">${user}</span>
-        <span class="times">${timestamp}</span>
-        </div>
-        <p>${message}</p>
-        </div>
-    </div>
-    `);
-        allMessages.append(msg);
+
+    const img = document.createElement('img');
+    img.src = avatar;
+    img.alt = user;
+
+    const imgContainer = document.createElement('div');
+    imgContainer.classList.add('image-container');
+    imgContainer.append(img);
+
+    const usernameSpan = document.createElement('span');
+    usernameSpan.classList.add('username');
+    usernameSpan.textContent = user;
+
+    const timeSpan = document.createElement('span');
+    timeSpan.classList.add('times');
+    timeSpan.textContent = timestamp;
+
+    const userInfo = document.createElement('div');
+    userInfo.classList.add('user-info');
+    userInfo.append(usernameSpan, timeSpan);
+
+    const p = document.createElement('p');
+    p.textContent = message;
+
+    const body = document.createElement('div');
+    body.classList.add('message-body');
+    body.append(userInfo, p);
+
+    const div = document.createElement('div');
+    div.classList.add('message');
+    div.append(imgContainer, body);
+
+    allMessages.append(div);
 });
