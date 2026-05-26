@@ -2,8 +2,10 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const multer = require('multer');
-const views = path.join(__dirname, '../views');
 const isLoggedIn = require('../middleware/isLoggedIn');
+const { buildAvatarPath } = require('../services/userService');
+
+const views = path.join(__dirname, '../views');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -32,12 +34,16 @@ router.get('/logout', (req, res) => {
 
 router.post('/register', upload.single('avatar'), (req, res) => {
     const { username } = req.body;
-    const avatarPath = req.file
-        ? `/uploads/${req.file.filename}`
-        : 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
     res.cookie('username', username);
-    res.cookie('avatar', avatarPath);
+    res.cookie('avatar', buildAvatarPath(req.file));
     res.redirect('/');
+});
+
+router.use((err, req, res, next) => {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).send('La imagen no puede superar 2MB.');
+    }
+    next(err);
 });
 
 module.exports = router;

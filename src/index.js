@@ -9,7 +9,7 @@ const app = express();
 const httpserver = createServer(app);
 
 app.set('port', process.env.PORT || 3000);
-app.set('view', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views'));
 
 app.use(cookieParser());
 app.use(require('./routes'));
