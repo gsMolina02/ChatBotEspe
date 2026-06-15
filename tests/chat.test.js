@@ -84,4 +84,19 @@ describe('ESPEchat - Eventos Socket.IO', () => {
         });
         clientA.emit('message', 'Hola mundo');
     });
+
+    test('Los mensajes vacíos se ignoran sin emitir eventos', (done) => {
+        let received = false;
+
+        clientB.on('message', () => {
+            received = true;
+        });
+
+        clientA.emit('message', '   ');
+
+        setTimeout(() => {
+            expect(received).toBe(false);
+            done();
+        }, 300);
+    });
 });

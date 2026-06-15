@@ -1,4 +1,4 @@
-const DEFAULT_AVATAR = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+const { DEFAULT_AVATAR } = require('../config/chat.constants');
 
 function buildAvatarPath(file) {
     return file ? `/uploads/${file.filename}` : DEFAULT_AVATAR;

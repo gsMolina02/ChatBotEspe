@@ -3,7 +3,8 @@ const router = express.Router();
 const path = require('path');
 const multer = require('multer');
 const isLoggedIn = require('../middleware/isLoggedIn');
-const { buildAvatarPath } = require('../services/userService');
+const { createRegistrationPayload } = require('../services/registrationService');
+const { MAX_AVATAR_SIZE } = require('../config/chat.constants');
 
 const views = path.join(__dirname, '../views');
 
@@ -16,7 +17,7 @@ const storage = multer.diskStorage({
         cb(null, `${Date.now()}${ext}`);
     }
 });
-const upload = multer({ storage, limits: { fileSize: 2 * 1024 * 1024 } });
+const upload = multer({ storage, limits: { fileSize: MAX_AVATAR_SIZE } });
 
 router.get('/', isLoggedIn, (req, res) => {
     res.sendFile(views + '/index.html');
@@ -33,9 +34,14 @@ router.get('/logout', (req, res) => {
 });
 
 router.post('/register', upload.single('avatar'), (req, res) => {
-    const { username } = req.body;
-    res.cookie('username', username);
-    res.cookie('avatar', buildAvatarPath(req.file));
+    try {
+        const { username, avatar } = createRegistrationPayload(req.body, req.file);
+        res.cookie('username', username);
+        res.cookie('avatar', avatar);
+    } catch (error) {
+        return res.status(400).send(error.message);
+    }
+
     res.redirect('/');
 });
 
