@@ -1,12 +1,5 @@
 const { registerHandlers } = require('./handlers/socketHandlers');
-
-const parseCookies = (cookieHeader = '') => {
-    return cookieHeader.split(';').reduce((acc, pair) => {
-        const [key, ...val] = pair.trim().split('=');
-        acc[key] = val.join('=');
-        return acc;
-    }, {});
-};
+const { parseCookies } = require('./utils/cookieParser');
 
 module.exports = httpserver => {
     const { Server } = require('socket.io');
@@ -22,6 +15,7 @@ module.exports = httpserver => {
             return;
         }
 
+        socket.data.userContext = { user, avatar };
         registerHandlers(io, socket, user, avatar);
     });
 };

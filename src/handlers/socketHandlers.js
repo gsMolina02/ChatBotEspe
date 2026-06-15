@@ -1,28 +1,29 @@
-const MAX_MESSAGE_LENGTH = 500;
+const { SOCKET_EVENTS } = require('../config/chat.constants');
+const { buildChatMessage } = require('../services/messageService');
 
 function registerHandlers(io, socket, user, avatar) {
-    socket.broadcast.emit('userJoined', { user });
+    socket.broadcast.emit(SOCKET_EVENTS.USER_JOINED, { user });
 
     socket.on('disconnect', () => {
-        socket.broadcast.emit('userLeft', { user });
+        socket.broadcast.emit(SOCKET_EVENTS.USER_LEFT, { user });
     });
 
-    socket.on('message', (message) => {
-        if (typeof message !== 'string' || !message.trim()) return;
-        io.emit('message', {
-            user,
-            avatar,
-            message: message.trim().slice(0, MAX_MESSAGE_LENGTH),
-            timestamp: new Date().toLocaleTimeString()
-        });
+    socket.on(SOCKET_EVENTS.MESSAGE, (message) => {
+        const payload = buildChatMessage(user, avatar, message);
+
+        if (!payload) {
+            return;
+        }
+
+        io.emit(SOCKET_EVENTS.MESSAGE, payload);
     });
 
-    socket.on('typing', () => {
-        socket.broadcast.emit('typing', { user });
+    socket.on(SOCKET_EVENTS.TYPING, () => {
+        socket.broadcast.emit(SOCKET_EVENTS.TYPING, { user });
     });
 
-    socket.on('stopTyping', () => {
-        socket.broadcast.emit('stopTyping');
+    socket.on(SOCKET_EVENTS.STOP_TYPING, () => {
+        socket.broadcast.emit(SOCKET_EVENTS.STOP_TYPING);
     });
 }
 
