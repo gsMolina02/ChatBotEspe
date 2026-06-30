@@ -1,4 +1,14 @@
-const socket = io();
+const params = new URLSearchParams(window.location.search);
+const room = params.get('room');
+const roomName = params.get('roomName') || room;
+
+if (!room) {
+    window.location.href = '/rooms';
+}
+
+const socket = io({ query: { room } });
+
+document.getElementById('room-name').textContent = roomName;
 
 const send = document.querySelector('#send-message');
 const allMessages = document.querySelector('#all-messages');

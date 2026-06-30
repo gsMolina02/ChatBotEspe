@@ -1,10 +1,11 @@
+require('../instrument');
 const express = require('express');
 const router = express.Router();
 const path = require('path');
 const multer = require('multer');
 const isLoggedIn = require('../middleware/isLoggedIn');
 const { createRegistrationPayload } = require('../services/registrationService');
-const { MAX_AVATAR_SIZE } = require('../config/chat.constants');
+const { MAX_AVATAR_SIZE, ROOMS } = require('../config/chat.constants');
 
 const views = path.join(__dirname, '../views');
 
@@ -20,7 +21,16 @@ const storage = multer.diskStorage({
 const upload = multer({ storage, limits: { fileSize: MAX_AVATAR_SIZE } });
 
 router.get('/', isLoggedIn, (req, res) => {
+    if (!req.query.room) return res.redirect('/rooms');
     res.sendFile(views + '/index.html');
+});
+
+router.get('/rooms', isLoggedIn, (req, res) => {
+    res.sendFile(views + '/rooms.html');
+});
+
+router.get('/api/rooms', isLoggedIn, (req, res) => {
+    res.json(ROOMS);
 });
 
 router.get('/register', (req, res) => {
@@ -33,6 +43,10 @@ router.get('/logout', (req, res) => {
     res.redirect('/register');
 });
 
+router.get('/debug-sentry', (req, res) => {
+    throw new Error('Prueba sentry: Error intencional en el backend');
+});
+
 router.post('/register', upload.single('avatar'), (req, res) => {
     try {
         const { username, avatar } = createRegistrationPayload(req.body, req.file);
@@ -42,7 +56,7 @@ router.post('/register', upload.single('avatar'), (req, res) => {
         return res.status(400).send(error.message);
     }
 
-    res.redirect('/');
+    res.redirect('/rooms');
 });
 
 router.use((err, req, res, next) => {
