@@ -534,6 +534,13 @@
     <script>
         const reviewSocket = io('/reviews');
 
+        let currentCategory = null;
+
+        // Re-join the current category room after reconnection
+        reviewSocket.on('connect', () => {
+            if (currentCategory) reviewSocket.emit('joinCategory', currentCategory);
+        });
+
         reviewSocket.on('newReview', (review) => {
             prependReviewCard(review.category, review);
         });
@@ -558,6 +565,7 @@
             renderSimpleList('pasatiempos', roomsData.pasatiempos.rooms);
             renderPaoTabs();
             setupCharCounters();
+            selectCategory('materias');
         }
 
         /* ── Profesores ordenados por rating ── */
@@ -669,6 +677,7 @@
         }
 
         function selectCategory(key) {
+            currentCategory = key;
             document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.rooms-panel').forEach(p => p.classList.remove('visible'));
             document.querySelector(`[data-key="${key}"]`).classList.add('active');
@@ -730,11 +739,9 @@
             });
 
             if (res.ok) {
-                const review = await res.json();
                 textarea.value = '';
                 document.getElementById(`count-${category}`).textContent = '280';
                 clearCite(category);
-                prependReviewCard(category, review);
             }
 
             btn.disabled = false;
