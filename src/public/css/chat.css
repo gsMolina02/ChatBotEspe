@@ -53,13 +53,20 @@
 }
 
 .message .message-body .user-info {
-  font-weight: bold;
-  color: #006633; /* Verde institucional */
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
 }
 
-.message .message-body .user-info .time {
-  color: #ffd700; /* Amarillo institucional */
-  font-size: 13px;
+.message .message-body .user-info .username {
+  font-weight: bold;
+  color: #006633;
+}
+
+.message .message-body .user-info .times {
+  color: #888;
+  font-size: 11px;
+  font-weight: 400;
 }
 
 .message .message-body p {

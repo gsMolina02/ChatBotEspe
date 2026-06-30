@@ -2,10 +2,20 @@ require('./instrument');
 const Sentry = require('@sentry/node');
 const { registerHandlers } = require('./handlers/socketHandlers');
 const { parseCookies } = require('./utils/cookieParser');
+const { setIo } = require('./socket');
 
 module.exports = httpserver => {
     const { Server } = require('socket.io');
     const io = new Server(httpserver);
+    setIo(io);
+
+    const reviewsNs = io.of('/reviews');
+    reviewsNs.on('connection', (socket) => {
+        socket.on('joinCategory', (category) => {
+            [...socket.rooms].forEach(r => { if (r !== socket.id) socket.leave(r); });
+            socket.join(category);
+        });
+    });
 
     io.on('connection', (socket) => {
         const cookies = parseCookies(socket.request.headers.cookie);

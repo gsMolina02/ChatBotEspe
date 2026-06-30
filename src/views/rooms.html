@@ -530,7 +530,14 @@
         </div>
     </div>
 
+    <script src="/socket.io/socket.io.js"></script>
     <script>
+        const reviewSocket = io('/reviews');
+
+        reviewSocket.on('newReview', (review) => {
+            prependReviewCard(review.category, review);
+        });
+
         let roomsData = {};
         let ratingsData = {};
         let citedRooms = { materias: null, profesores: null, clubes: null, pasatiempos: null };
@@ -671,6 +678,7 @@
                 selectPao(roomsData.materias.subcategories[0].id);
             }
 
+            reviewSocket.emit('joinCategory', key);
             loadReviews(key);
         }
 
