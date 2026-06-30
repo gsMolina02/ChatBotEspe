@@ -84,9 +84,7 @@ socket.on('stopTyping', () => {
     typingIndicator.textContent = '';
 });
 
-socket.on('message', ({ user, avatar, message, timestamp }) => {
-    typingIndicator.textContent = '';
-
+function renderMessage({ user, avatar, message, timestamp }) {
     const img = document.createElement('img');
     img.src = avatar;
     img.alt = user;
@@ -119,4 +117,18 @@ socket.on('message', ({ user, avatar, message, timestamp }) => {
     div.append(imgContainer, body);
 
     allMessages.append(div);
+}
+
+socket.on('roomHistory', (messages) => {
+    if (messages.length === 0) return;
+    const divider = document.createElement('div');
+    divider.classList.add('notification');
+    divider.textContent = `— ${messages.length} mensaje(s) anteriores —`;
+    allMessages.append(divider);
+    messages.forEach(renderMessage);
+});
+
+socket.on('message', (payload) => {
+    typingIndicator.textContent = '';
+    renderMessage(payload);
 });
