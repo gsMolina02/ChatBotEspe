@@ -8,6 +8,7 @@ const { createRegistrationPayload } = require('../services/registrationService')
 const { MAX_AVATAR_SIZE, ROOMS } = require('../config/chat.constants');
 const { getReviewsByCategory, addReview } = require('../services/reviewService');
 const { getRatings, addRating } = require('../services/ratingService');
+const { getIo } = require('../socket');
 
 const views = path.join(__dirname, '../views');
 
@@ -55,6 +56,10 @@ router.post('/api/reviews', isLoggedIn, express.json(), (req, res) => {
         content,
         citedRoom: citedRoom || null
     });
+
+    const io = getIo();
+    if (io) io.of('/reviews').to(category).emit('newReview', review);
+
     res.json(review);
 });
 
