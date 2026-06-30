@@ -23,10 +23,12 @@ describe('ESPEchat - Eventos Socket.IO', () => {
 
     beforeEach((done) => {
         clientA = Client(`http://localhost:${port}`, {
-            extraHeaders: { cookie: 'username=Juan' }
+            extraHeaders: { cookie: 'username=Juan' },
+            query: { room: 'test-room' }
         });
         clientB = Client(`http://localhost:${port}`, {
-            extraHeaders: { cookie: 'username=Maria' }
+            extraHeaders: { cookie: 'username=Maria' },
+            query: { room: 'test-room' }
         });
 
         let connected = 0;
