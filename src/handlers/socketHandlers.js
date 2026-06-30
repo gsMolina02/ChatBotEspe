@@ -1,8 +1,11 @@
 const { SOCKET_EVENTS } = require('../config/chat.constants');
-const { buildChatMessage } = require('../services/messageService');
+const { buildChatMessage, saveMessage, getRoomHistory } = require('../services/messageService');
 
 function registerHandlers(io, socket, user, avatar, room) {
     socket.join(room);
+
+    socket.emit(SOCKET_EVENTS.ROOM_HISTORY, getRoomHistory(room));
+
     socket.to(room).emit(SOCKET_EVENTS.USER_JOINED, { user });
 
     socket.on('disconnect', () => {
@@ -16,6 +19,7 @@ function registerHandlers(io, socket, user, avatar, room) {
             return;
         }
 
+        saveMessage(room, payload);
         io.to(room).emit(SOCKET_EVENTS.MESSAGE, payload);
     });
 

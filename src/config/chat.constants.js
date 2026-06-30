@@ -8,8 +8,11 @@ const SOCKET_EVENTS = {
     USER_LEFT: 'userLeft',
     MESSAGE: 'message',
     TYPING: 'typing',
-    STOP_TYPING: 'stopTyping'
+    STOP_TYPING: 'stopTyping',
+    ROOM_HISTORY: 'roomHistory'
 };
+
+const MAX_ROOM_HISTORY = 100;
 
 const ROOMS = {
     materias: {
@@ -164,6 +167,7 @@ module.exports = {
     DEFAULT_AVATAR,
     MAX_MESSAGE_LENGTH,
     MAX_AVATAR_SIZE,
+    MAX_ROOM_HISTORY,
     SOCKET_EVENTS,
     ROOMS
 };

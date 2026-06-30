@@ -1,6 +1,8 @@
 require('../instrument');
 const Sentry = require('@sentry/node');
-const { MAX_MESSAGE_LENGTH } = require('../config/chat.constants');
+const { MAX_MESSAGE_LENGTH, MAX_ROOM_HISTORY } = require('../config/chat.constants');
+
+const roomHistories = new Map();
 
 function buildChatMessage(user, avatar, message) {
     try {
@@ -23,6 +25,21 @@ function buildChatMessage(user, avatar, message) {
     }
 }
 
+function saveMessage(room, payload) {
+    if (!roomHistories.has(room)) {
+        roomHistories.set(room, []);
+    }
+    const history = roomHistories.get(room);
+    history.push(payload);
+    if (history.length > MAX_ROOM_HISTORY) {
+        history.shift();
+    }
+}
+
+function getRoomHistory(room) {
+    return roomHistories.get(room) || [];
+}
+
 function registerSocketErrorHandler(socket) {
     socket.on('error', (err) => {
         Sentry.captureException(err, {
@@ -32,4 +49,4 @@ function registerSocketErrorHandler(socket) {
     });
 }
 
-module.exports = { buildChatMessage, registerSocketErrorHandler };
+module.exports = { buildChatMessage, saveMessage, getRoomHistory, registerSocketErrorHandler };
