@@ -1,5 +1,7 @@
+require('./instrument');
 const express = require('express');
 const { createServer } = require('http');
+const Sentry = require('@sentry/node');
 const realTimeServer = require('./realTimeServer');
 const path = require('path');
 
@@ -13,6 +15,8 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(cookieParser());
 app.use(require('./routes'));
+
+Sentry.setupExpressErrorHandler(app);
 
 app.use(express.static(path.join(__dirname,'public')));
 app.use('/emoji-picker-element', express.static(path.join(__dirname, '../node_modules/emoji-picker-element')));

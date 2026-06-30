@@ -10,7 +10,17 @@
 </head>
 <body>
  <header>
-    <h1>ESPE CHAT</h1>
+    <div class="header-left">
+        <a href="/rooms" id="back-btn" title="Cambiar sala">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"/>
+            </svg>
+        </a>
+        <div class="header-title">
+            <h1>ESPE CHAT</h1>
+            <span id="room-name" class="room-badge"></span>
+        </div>
+    </div>
     <a href="/logout" id="logout-btn" title="Salir del chat">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -41,7 +51,16 @@
         <button id="send-message" class="btn btn-secondary">Enviar</button>
     </div>
 </div>
-
+<script>
+    window.sentryOnload = function(){
+        Sentry.init({
+            environment: 'production',
+            release: 'espechat@1.0.0',
+            tracesSampleRate:0,
+        });
+    };
+</script>
+<script src="https://js.sentry-cdn.com/a2a246199325900c8ee1065ccd0f5714.min.js" crossorigin="anonymous"></script>
 <script type="module" src="/emoji-picker-element/index.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="js/script.js"></script>

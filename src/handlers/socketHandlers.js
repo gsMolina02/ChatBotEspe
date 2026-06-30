@@ -1,11 +1,12 @@
 const { SOCKET_EVENTS } = require('../config/chat.constants');
 const { buildChatMessage } = require('../services/messageService');
 
-function registerHandlers(io, socket, user, avatar) {
-    socket.broadcast.emit(SOCKET_EVENTS.USER_JOINED, { user });
+function registerHandlers(io, socket, user, avatar, room) {
+    socket.join(room);
+    socket.to(room).emit(SOCKET_EVENTS.USER_JOINED, { user });
 
     socket.on('disconnect', () => {
-        socket.broadcast.emit(SOCKET_EVENTS.USER_LEFT, { user });
+        socket.to(room).emit(SOCKET_EVENTS.USER_LEFT, { user });
     });
 
     socket.on(SOCKET_EVENTS.MESSAGE, (message) => {
@@ -15,15 +16,15 @@ function registerHandlers(io, socket, user, avatar) {
             return;
         }
 
-        io.emit(SOCKET_EVENTS.MESSAGE, payload);
+        io.to(room).emit(SOCKET_EVENTS.MESSAGE, payload);
     });
 
     socket.on(SOCKET_EVENTS.TYPING, () => {
-        socket.broadcast.emit(SOCKET_EVENTS.TYPING, { user });
+        socket.to(room).emit(SOCKET_EVENTS.TYPING, { user });
     });
 
     socket.on(SOCKET_EVENTS.STOP_TYPING, () => {
-        socket.broadcast.emit(SOCKET_EVENTS.STOP_TYPING);
+        socket.to(room).emit(SOCKET_EVENTS.STOP_TYPING);
     });
 }
 
