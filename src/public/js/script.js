@@ -88,6 +88,10 @@ function renderMessage({ user, avatar, message, timestamp }) {
     const img = document.createElement('img');
     img.src = avatar;
     img.alt = user;
+    img.onerror = () => {
+        img.onerror = null;
+        img.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user)}&background=006633&color=fff&size=56&bold=true`;
+    };
 
     const imgContainer = document.createElement('div');
     imgContainer.classList.add('image-container');

@@ -73,7 +73,10 @@ router.post('/api/ratings', isLoggedIn, express.json(), (req, res) => {
     if (!profId || !s || s < 1 || s > 5) {
         return res.status(400).json({ error: 'Datos inválidos' });
     }
-    res.json(addRating(profId, s));
+    const updated = addRating(profId, s);
+    const io = getIo();
+    if (io) io.of('/reviews').emit('ratingUpdated', { profId, rating: updated });
+    res.json(updated);
 });
 
 router.get('/register', (req, res) => {

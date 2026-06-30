@@ -545,6 +545,11 @@
             prependReviewCard(review.category, review);
         });
 
+        reviewSocket.on('ratingUpdated', ({ profId, rating }) => {
+            ratingsData[profId] = rating;
+            renderProfessores();
+        });
+
         let roomsData = {};
         let ratingsData = {};
         let citedRooms = { materias: null, profesores: null, clubes: null, pasatiempos: null };
@@ -777,7 +782,7 @@
                 : '';
             return `
                 <div class="review-card">
-                    <img class="review-avatar" src="${r.avatar}" alt="${r.author}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
+                    <img class="review-avatar" src="${r.avatar}" alt="${r.author}" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name='+encodeURIComponent('${r.author}')+'&background=006633&color=fff&size=40&bold=true'">
                     <div class="review-body">
                         <div class="review-header">
                             <span class="review-author">${r.author}</span>
