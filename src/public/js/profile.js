@@ -62,14 +62,7 @@ document.getElementById('profile-form').addEventListener('submit', async e => {
             errorMsg.textContent = data.error;
             errorMsg.style.display = 'block';
         } else {
-            successMsg.textContent = 'Perfil actualizado correctamente.';
-            successMsg.style.display = 'block';
-            document.getElementById('currentPassword').value = '';
-            document.getElementById('newPassword').value = '';
-            document.getElementById('confirmPassword').value = '';
-            if (data.avatar) {
-                avatarPreview.src = data.avatar;
-            }
+            window.location.href = '/rooms';
         }
     } catch {
         errorMsg.textContent = 'Error al guardar. Intenta de nuevo.';
