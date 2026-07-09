@@ -1,28 +1,15 @@
-const fs = require('node:fs');
-const path = require('node:path');
+const db = require('../config/firebase');
+const collection = db.collection('reviews');
 
-const filePath = path.join(__dirname, '../data/reviews.json');
-
-function readReviews() {
-    try {
-        return JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    } catch {
-        return [];
-    }
+async function getReviewsByCategory(category) {
+    const snapshot = await collection.where('category', '==', category).get();
+    return snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 }
 
-function writeReviews(reviews) {
-    fs.writeFileSync(filePath, JSON.stringify(reviews, null, 2), 'utf8');
-}
-
-function getReviewsByCategory(category) {
-    return readReviews().filter(r => r.category === category);
-}
-
-function addReview({ category, roomId, roomName, author, avatar, content, citedRoom }) {
-    const reviews = readReviews();
+async function addReview({ category, roomId, roomName, author, avatar, content, citedRoom }) {
     const review = {
-        id: Date.now().toString(),
         category,
         roomId: roomId || null,
         roomName: roomName || null,
@@ -32,9 +19,8 @@ function addReview({ category, roomId, roomName, author, avatar, content, citedR
         citedRoom: citedRoom || null,
         timestamp: new Date().toISOString()
     };
-    reviews.unshift(review);
-    writeReviews(reviews);
-    return review;
+    const ref = await collection.add(review);
+    return { id: ref.id, ...review };
 }
 
 module.exports = { getReviewsByCategory, addReview };
