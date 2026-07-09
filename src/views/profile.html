@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/register.css">
+    <title>ESPE CHAT - Mi Perfil</title>
+</head>
+<body>
+    <header>
+        <h1>ESPE CHAT</h1>
+        <a href="/rooms" id="back-btn" title="Volver a salas">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"/>
+            </svg>
+        </a>
+        <a href="/logout" id="logout-btn" title="Salir">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+        </a>
+    </header>
+    <main>
+        <form id="profile-form" class="card auth-card" enctype="multipart/form-data">
+            <h2 class="auth-title">Mi Perfil</h2>
+            <div id="success-msg" class="auth-success" style="display:none"></div>
+            <div id="error-msg" class="auth-error" style="display:none"></div>
+
+            <div class="avatar-upload">
+                <img id="avatar-preview"
+                     src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                     alt="Foto de perfil">
+                <label for="avatar" class="avatar-label">Cambiar foto de perfil</label>
+                <input type="file" id="avatar" name="avatar" accept="image/*" hidden>
+            </div>
+
+            <div class="input-group">
+                <label>Nombre de usuario</label>
+                <input type="text" id="username-display" disabled class="input-disabled" />
+                <span class="field-note">El nombre de usuario no se puede modificar.</span>
+            </div>
+            <div class="input-group">
+                <label for="email">Correo electrónico</label>
+                <input type="email" id="email" name="email" autocomplete="email" />
+            </div>
+            <div class="input-group">
+                <label for="phone">Número de teléfono</label>
+                <input type="tel" id="phone" name="phone" autocomplete="tel" />
+            </div>
+
+            <div class="auth-section-divider">Cambiar contraseña <span>(opcional)</span></div>
+
+            <div class="input-group">
+                <label for="currentPassword">Contraseña actual</label>
+                <div class="password-wrapper">
+                    <input type="password" id="currentPassword" name="currentPassword"
+                           autocomplete="current-password" />
+                    <button type="button" class="toggle-pass" tabindex="-1">&#128065;</button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="newPassword">Nueva contraseña</label>
+                <div class="password-wrapper">
+                    <input type="password" id="newPassword" name="newPassword"
+                           autocomplete="new-password" minlength="6" />
+                    <button type="button" class="toggle-pass" tabindex="-1">&#128065;</button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="confirmPassword">Confirmar nueva contraseña</label>
+                <div class="password-wrapper">
+                    <input type="password" id="confirmPassword" name="confirmPassword"
+                           autocomplete="new-password" minlength="6" />
+                    <button type="button" class="toggle-pass" tabindex="-1">&#128065;</button>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <button type="submit" class="btn primary" id="save-btn">Guardar cambios</button>
+            </div>
+        </form>
+    </main>
+    <script>
+        window.sentryOnload = function(){
+            Sentry.init({ environment:'production', release:'espechat@1.0.0', tracesSampleRate:0 });
+        };
+    </script>
+    <script src="https://js.sentry-cdn.com/a2a246199325900c8ee1065ccd0f5714.min.js" crossorigin="anonymous"></script>
+    <script src="js/profile.js"></script>
+</body>
+</html>

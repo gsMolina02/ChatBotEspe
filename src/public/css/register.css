@@ -1,73 +1,202 @@
+/* ── Avatar upload ── */
 .avatar-upload {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 20px;
-  gap: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 10px;
 }
-
 .avatar-upload img {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #006633;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #006633;
 }
-
 .avatar-label {
-  cursor: pointer;
-  background-color: #006633;
-  color: #ffffff;
-  padding: 6px 14px;
-  border-radius: 6px;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
+    cursor: pointer;
+    background-color: #006633;
+    color: #ffffff;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
 }
-
 .avatar-label:hover {
-  background-color: #ffd700;
-  color: #000000;
+    background-color: #ffd700;
+    color: #000000;
 }
 
+/* ── Auth page layout ── */
 main {
-  margin-top: 50px;
-  display: flex;
-  justify-content: center;
-  background-color: #ffffff; /* Fondo blanco institucional */
+    margin-top: 40px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: center;
+    background-color: #ffffff;
 }
 
-main form {
-  width: 50%;
-  padding: 20px;
-  border: 2px solid #006633; /* Borde verde institucional */
-  border-radius: 8px;
-  background-color: #f9f9f9; /* Contraste suave */
+.auth-card {
+    width: 100%;
+    max-width: 480px;
+    padding: 2rem 2rem 1.5rem;
+    margin: 0 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-main form .input-group label {
-  text-align: center;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #006633; /* Verde institucional */
+.auth-title {
+    text-align: center;
+    color: #006633;
+    font-size: 1.4rem;
+    margin-bottom: 0.25rem;
 }
 
-main form .button-container {
-  margin-top: 10px;
-  text-align: center;
+/* ── Input group ── */
+main form .input-group label,
+.auth-card .input-group label {
+    text-align: left;
+    margin-bottom: 4px;
+    font-weight: bold;
+    color: #006633;
+    font-size: 0.9rem;
 }
 
-main form .button-container button {
-  background-color: #006633; /* Verde institucional */
-  color: #ffffff; /* Texto blanco */
-  font-weight: bold;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+/* ── Select ── */
+.auth-select {
+    border: 1px solid #006633;
+    outline: none;
+    padding: 10px;
+    border-radius: 3px;
+    background: #fff;
+    font-size: 1rem;
+    color: #333;
+    cursor: pointer;
+}
+.auth-select:focus { border-color: #004422; }
+
+/* ── Password wrapper ── */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.password-wrapper input {
+    flex: 1;
+    padding-right: 2.6rem;
+}
+.toggle-pass {
+    position: absolute;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    line-height: 1;
+    padding: 0;
+    color: #666;
+}
+.toggle-pass:hover { color: #006633; }
+
+/* ── Error / Success banners ── */
+.auth-error {
+    background: #fff0f0;
+    border: 1px solid #f5a5a5;
+    color: #c0392b;
+    border-radius: 6px;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.9rem;
+}
+.auth-success {
+    background: #f0fff4;
+    border: 1px solid #a5d6a7;
+    color: #006633;
+    border-radius: 6px;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.9rem;
 }
 
-main form .button-container button:hover {
-  background-color: #ffd700; /* Amarillo institucional al hover */
-  color: #000000; /* Texto negro para contraste */
+/* ── Section divider ── */
+.auth-section-divider {
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #555;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 0.8rem;
+    margin-top: 0.25rem;
+}
+.auth-section-divider span { font-weight: 400; color: #999; }
+
+/* ── Disabled field ── */
+.input-disabled {
+    background: #f5f5f5 !important;
+    color: #888 !important;
+    cursor: not-allowed !important;
+}
+.field-note {
+    font-size: 0.78rem;
+    color: #999;
+    margin-top: 2px;
+}
+
+/* ── Auth link & submit ── */
+main form .button-container,
+.auth-card .button-container {
+    margin-top: 0.25rem;
+    text-align: center;
+}
+main form .button-container button,
+.auth-card .button-container button {
+    background-color: #006633;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 10px 28px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+main form .button-container button:hover,
+.auth-card .button-container button:hover {
+    background-color: #ffd700;
+    color: #000000;
+}
+main form .button-container button:disabled,
+.auth-card .button-container button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.auth-link {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 0.25rem;
+}
+.auth-link a {
+    color: #006633;
+    font-weight: 600;
+    text-decoration: none;
+}
+.auth-link a:hover { text-decoration: underline; }
+
+/* ── Profile link in header ── */
+#profile-btn {
+    position: absolute;
+    left: 56px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+#profile-btn:hover {
+    color: #ffd700;
+    background-color: rgba(255,255,255,0.1);
 }
