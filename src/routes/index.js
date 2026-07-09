@@ -36,18 +36,18 @@ router.get('/api/rooms', isLoggedIn, (req, res) => {
     res.json(ROOMS);
 });
 
-router.get('/api/reviews', isLoggedIn, (req, res) => {
+router.get('/api/reviews', isLoggedIn, async (req, res) => {
     const { category } = req.query;
     if (!category) return res.status(400).json({ error: 'category requerida' });
-    res.json(getReviewsByCategory(category));
+    res.json(await getReviewsByCategory(category));
 });
 
-router.post('/api/reviews', isLoggedIn, express.json(), (req, res) => {
+router.post('/api/reviews', isLoggedIn, express.json(), async (req, res) => {
     const { category, roomId, roomName, content, citedRoom } = req.body;
     if (!category || !content?.trim()) {
         return res.status(400).json({ error: 'Campos inválidos' });
     }
-    const review = addReview({
+    const review = await addReview({
         category,
         roomId: roomId || null,
         roomName: roomName || null,
@@ -63,17 +63,17 @@ router.post('/api/reviews', isLoggedIn, express.json(), (req, res) => {
     res.json(review);
 });
 
-router.get('/api/ratings', isLoggedIn, (req, res) => {
-    res.json(getRatings());
+router.get('/api/ratings', isLoggedIn, async (req, res) => {
+    res.json(await getRatings());
 });
 
-router.post('/api/ratings', isLoggedIn, express.json(), (req, res) => {
+router.post('/api/ratings', isLoggedIn, express.json(), async (req, res) => {
     const { profId, score } = req.body;
     const s = Number(score);
     if (!profId || !s || s < 1 || s > 5) {
         return res.status(400).json({ error: 'Datos inválidos' });
     }
-    const updated = addRating(profId, s);
+    const updated = await addRating(profId, s);
     const io = getIo();
     if (io) io.of('/reviews').emit('ratingUpdated', { profId, rating: updated });
     res.json(updated);
