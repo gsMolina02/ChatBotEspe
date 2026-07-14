@@ -88,6 +88,41 @@
         .pao-tab:hover  { border-color: #4f7cff; color: #4f7cff; }
         .pao-tab.active { background: #4f7cff; border-color: #4f7cff; color: white; }
 
+        .search-box {
+            position: relative;
+            margin-bottom: 0.8rem;
+        }
+
+        .search-box svg {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.6rem 0.8rem 0.6rem 2.4rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            color: #333;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+        .search-input:focus { border-color: #4f7cff; }
+        .search-input::placeholder { color: #aaa; }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: #bbb;
+            padding: 1rem;
+            font-size: 0.88rem;
+        }
+
         .rooms-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -451,6 +486,13 @@
         <!-- Panel Profesores -->
         <div id="panel-profesores" class="rooms-panel">
             <p class="panel-label">Profesores</p>
+            <div class="search-box">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input type="text" class="search-input" id="prof-search" placeholder="Buscar profesor por nombre..." oninput="filterProfessores(this.value)">
+            </div>
             <div class="rooms-list" id="profesores-list"></div>
             <div class="reviews-section">
                 <p class="reviews-label">Reseñas — Profesores</p>
@@ -580,13 +622,32 @@
         }
 
         /* ── Profesores ordenados por rating ── */
+        let profFilter = '';
+
+        function normalize(str) {
+            return str.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+        }
+
+        function filterProfessores(term) {
+            profFilter = term;
+            renderProfessores();
+        }
+
         function renderProfessores() {
-            const sorted = [...roomsData.profesores.rooms].sort((a, b) => {
+            const term = normalize(profFilter.trim());
+            const filtered = roomsData.profesores.rooms.filter(r =>
+                !term || normalize(r.name).includes(term)
+            );
+            const sorted = [...filtered].sort((a, b) => {
                 const ra = ratingsData[a.id]?.average ?? -1;
                 const rb = ratingsData[b.id]?.average ?? -1;
                 return rb - ra;
             });
             const list = document.getElementById('profesores-list');
+            if (sorted.length === 0) {
+                list.innerHTML = '<p class="no-results">No se encontraron profesores con ese nombre.</p>';
+                return;
+            }
             list.innerHTML = sorted.map(r => profItemHTML(r)).join('');
         }
 
