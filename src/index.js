@@ -3,6 +3,7 @@ const express = require('express');
 const { createServer } = require('http');
 const Sentry = require('@sentry/node');
 const realTimeServer = require('./realTimeServer');
+const { logEvent, ORIGENES } = require('./services/loggerService');
 const path = require('path');
 
 const cookieParser = require('cookie-parser');
@@ -23,6 +24,7 @@ app.use('/emoji-picker-element', express.static(path.join(__dirname, '../node_mo
 
 httpserver.listen(app.get('port'), () => {
     console.log('La aplicacion esta corriendo en el puerto: ', app.get('port'));
+    logEvent({ accion: 'SERVIDOR_INICIADO', usuario: 'sistema', rol: 'sistema', origen: ORIGENES.M, detalle: { puerto: app.get('port') } });
 });
 
 realTimeServer(httpserver);

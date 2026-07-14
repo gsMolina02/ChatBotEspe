@@ -9,6 +9,7 @@ const { ROOMS } = require('../config/chat.constants');
 const { getReviewsByCategory, addReview } = require('../services/reviewService');
 const { getRatings, addRating } = require('../services/ratingService');
 const { createUser, verifyUser, updateUser, getUserById } = require('../services/userService');
+const { logEvent, ORIGENES } = require('../services/loggerService');
 const { getIo } = require('../socket');
 
 const views = path.join(__dirname, '../views');
@@ -50,8 +51,10 @@ router.post('/login', express.urlencoded({ extended: false }), async (req, res) 
         if (!email || !password) throw new Error('Completa todos los campos.');
         const user = await verifyUser(email, password);
         setAuthCookies(res, user);
+        logEvent({ accion: 'LOGIN_EXITOSO', usuario: user.username, rol: 'estudiante', origen: ORIGENES.MS, detalle: { email } });
         res.redirect('/rooms');
     } catch (err) {
+        logEvent({ accion: 'LOGIN_FALLIDO', usuario: req.body.email || 'desconocido', rol: 'anonimo', origen: ORIGENES.MS, detalle: { motivo: err.message } });
         res.redirect('/login?error=' + encodeURIComponent(err.message));
     }
 });
@@ -72,13 +75,16 @@ router.post('/register', upload.single('avatar'), async (req, res) => {
         const avatar = req.file ? `/uploads/${req.file.filename}` : null;
         const user = await createUser({ email, password, username, phone, gender, avatar });
         setAuthCookies(res, user);
+        logEvent({ accion: 'REGISTRO_USUARIO', usuario: user.username, rol: 'estudiante', origen: ORIGENES.MS, detalle: { email } });
         res.redirect('/rooms');
     } catch (err) {
+        logEvent({ accion: 'REGISTRO_FALLIDO', usuario: req.body.username || 'desconocido', rol: 'anonimo', origen: ORIGENES.MS, detalle: { motivo: err.message } });
         res.redirect('/register?error=' + encodeURIComponent(err.message));
     }
 });
 
 router.get('/logout', (req, res) => {
+    logEvent({ accion: 'LOGOUT', usuario: req.cookies.username || 'desconocido', rol: 'estudiante', origen: ORIGENES.MS });
     res.clearCookie('userId');
     res.clearCookie('username');
     res.clearCookie('avatar');
@@ -121,8 +127,16 @@ router.post('/profile', isLoggedIn, upload.single('avatar'), async (req, res) =>
         });
 
         res.cookie('avatar', avatarUrl(updated), COOKIE_OPTS);
+        logEvent({
+            accion: 'ACTUALIZACION_PERFIL',
+            usuario: req.cookies.username,
+            rol: 'estudiante',
+            origen: ORIGENES.MS,
+            detalle: { camposModificados: Object.keys(req.body).filter(k => req.body[k] && !k.toLowerCase().includes('password')), cambioPassword: Boolean(newPassword), cambioAvatar: Boolean(req.file) }
+        });
         res.json({ success: true, avatar: avatarUrl(updated) });
     } catch (err) {
+        logEvent({ accion: 'ACTUALIZACION_PERFIL_FALLIDA', usuario: req.cookies.username, rol: 'estudiante', origen: ORIGENES.MS, detalle: { motivo: err.message } });
         res.json({ error: err.message });
     }
 });
@@ -166,6 +180,7 @@ router.post('/api/reviews', isLoggedIn, express.json(), async (req, res) => {
     });
     const io = getIo();
     if (io) io.of('/reviews').to(category).emit('newReview', review);
+    logEvent({ accion: 'PUBLICAR_RESENA', usuario: req.cookies.username, rol: 'estudiante', origen: ORIGENES.MS, detalle: { categoria: category, salaCitada: roomName || null } });
     res.json(review);
 });
 
@@ -184,6 +199,7 @@ router.post('/api/ratings', isLoggedIn, express.json(), async (req, res) => {
     const updated = await addRating(profId, s);
     const io = getIo();
     if (io) io.of('/reviews').emit('ratingUpdated', { profId, rating: updated });
+    logEvent({ accion: 'CALIFICAR_PROFESOR', usuario: req.cookies.username, rol: 'estudiante', origen: ORIGENES.MS, detalle: { profesor: profId, puntaje: s } });
     res.json(updated);
 });
 
