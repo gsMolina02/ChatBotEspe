@@ -205,6 +205,10 @@ router.post('/api/ratings', isLoggedIn, express.json(), async (req, res) => {
 
 /* ── Misc ── */
 
+router.get('/health', (req, res) => {
+    res.json({ status: 'ok' });
+});
+
 router.get('/debug-sentry', (req, res) => {
     throw new Error('Prueba sentry: Error intencional en el backend');
 });
