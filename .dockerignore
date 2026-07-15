@@ -1,0 +1,15 @@
+node_modules
+logs
+.env
+.env.example
+.git
+.github
+.gitignore
+.scannerwork
+.claude
+tests
+Dockerfile
+docker-compose.yml
+*.md
+src/public/uploads/*
+!src/public/uploads/.gitkeep
