@@ -1,0 +1,33 @@
+services:
+  espechat:
+    build: .
+    container_name: espechat
+    # Hardening de puertos: el 3000 solo se publica en localhost.
+    # Nadie fuera de esta máquina puede alcanzar la aplicación directamente.
+    ports:
+      - "127.0.0.1:3000:3000"
+    env_file: .env
+    environment:
+      - NODE_ENV=production
+      - LOG_DIR=/app/logs
+    # Sistema de archivos raíz de solo lectura: un atacante no puede
+    # modificar el código ni instalar herramientas dentro del contenedor
+    read_only: true
+    # Únicas rutas escribibles: logs y fotos de perfil (volúmenes) y /tmp (memoria)
+    volumes:
+      - espechat-logs:/app/logs
+      - espechat-uploads:/app/src/public/uploads
+    tmpfs:
+      - /tmp
+    # El proceso no puede escalar privilegios (bloquea setuid/setgid)
+    security_opt:
+      - no-new-privileges:true
+    # Se eliminan TODAS las capacidades de Linux: sin acceso a red en modo raw,
+    # sin montar dispositivos, sin tocar periféricos del host
+    cap_drop:
+      - ALL
+    restart: unless-stopped
+
+volumes:
+  espechat-logs:
+  espechat-uploads:

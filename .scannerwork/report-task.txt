@@ -1,0 +1,6 @@
+projectKey=ESPEchat
+serverUrl=http://localhost:9000
+serverVersion=26.6.0.123539
+dashboardUrl=http://localhost:9000/dashboard?id=ESPEchat
+ceTaskId=5fe0c911-75f7-4034-b812-daa9e6e0f87b
+ceTaskUrl=http://localhost:9000/api/ce/task?id=5fe0c911-75f7-4034-b812-daa9e6e0f87b

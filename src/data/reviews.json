@@ -1,0 +1,30 @@
+[
+  {
+    "id": "1782832348808",
+    "category": "profesores",
+    "roomId": "prof-carlos-mendoza",
+    "roomName": "Dr. Carlos Mendoza",
+    "author": "xd",
+    "avatar": "/uploads/1782831315917.jpg",
+    "content": "mal profesor",
+    "citedRoom": {
+      "id": "prof-carlos-mendoza",
+      "name": "Dr. Carlos Mendoza"
+    },
+    "timestamp": "2026-06-30T15:12:28.808Z"
+  },
+  {
+    "id": "1782832328531",
+    "category": "materias",
+    "roomId": "calculo-diferencial",
+    "roomName": "Cálculo Diferencial e Integral",
+    "author": "xd",
+    "avatar": "/uploads/1782831315917.jpg",
+    "content": "mala materia",
+    "citedRoom": {
+      "id": "calculo-diferencial",
+      "name": "Cálculo Diferencial e Integral"
+    },
+    "timestamp": "2026-06-30T15:12:08.531Z"
+  }
+]

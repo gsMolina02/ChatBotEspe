@@ -1,6 +1,19 @@
+const params = new URLSearchParams(window.location.search);
+const room = params.get('room');
+const roomName = params.get('roomName') || room;
+
+if (!room) {
+    window.location.href = '/rooms';
+}
+
+// Aquí combinamos tu ruta oculta con la query de la sala de chat
 const socket = io({
-    path: '/api/v1/stream'
+    path: '/api/v1/stream',
+    query: { room }
 });
+
+document.getElementById('room-name').textContent = roomName;
+
 
 const send = document.querySelector('#send-message');
 const allMessages = document.querySelector('#all-messages');
@@ -76,12 +89,14 @@ socket.on('stopTyping', () => {
     typingIndicator.textContent = '';
 });
 
-socket.on('message', ({ user, avatar, message, timestamp }) => {
-    typingIndicator.textContent = '';
-
+function renderMessage({ user, avatar, message, timestamp }) {
     const img = document.createElement('img');
     img.src = avatar;
     img.alt = user;
+    img.onerror = () => {
+        img.onerror = null;
+        img.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user)}&background=006633&color=fff&size=56&bold=true`;
+    };
 
     const imgContainer = document.createElement('div');
     imgContainer.classList.add('image-container');
@@ -111,4 +126,18 @@ socket.on('message', ({ user, avatar, message, timestamp }) => {
     div.append(imgContainer, body);
 
     allMessages.append(div);
+}
+
+socket.on('roomHistory', (messages) => {
+    if (messages.length === 0) return;
+    const divider = document.createElement('div');
+    divider.classList.add('notification');
+    divider.textContent = `— ${messages.length} mensaje(s) anteriores —`;
+    allMessages.append(divider);
+    messages.forEach(renderMessage);
+});
+
+socket.on('message', (payload) => {
+    typingIndicator.textContent = '';
+    renderMessage(payload);
 });
