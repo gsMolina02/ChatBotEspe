@@ -136,3 +136,14 @@ socket.on('message', (payload) => {
     typingIndicator.textContent = '';
     renderMessage(payload);
 });
+socket.on('rateLimitError', data => {
+    showNotification(`${data.message} Espera ${data.retryAfter || 1} segundos.`);
+});
+
+socket.on('messageError', data => {
+    showNotification(data.message);
+});
+
+socket.on('connect_error', error => {
+    showNotification(error.message || 'No fue posible conectarse al chat.');
+});

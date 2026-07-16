@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/register.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/register.css">
     <title>ESPE CHAT - Registro</title>
 </head>
 <body>
@@ -13,29 +13,22 @@
         <form action="/register" method="POST" enctype="multipart/form-data" class="card auth-card" id="register-form">
             <h2 class="auth-title">Crear Cuenta</h2>
             <div id="error-msg" class="auth-error" style="display:none"></div>
-
             <div class="avatar-upload">
-                <img id="avatar-preview"
-                     src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                     alt="Vista previa">
+                <img id="avatar-preview" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Vista previa">
                 <label for="avatar" class="avatar-label">Seleccionar foto de perfil</label>
-                <input type="file" id="avatar" name="avatar" accept="image/*" hidden>
+                <input type="file" id="avatar" name="avatar" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" hidden>
             </div>
-
             <div class="input-group">
                 <label for="username">Nombre de usuario</label>
-                <input type="text" id="username" name="username" required autocomplete="username"
-                       placeholder="Sin espacios, único" />
+                <input type="text" id="username" name="username" required minlength="2" maxlength="80" autocomplete="username" placeholder="Sin espacios, único">
             </div>
             <div class="input-group">
-                <label for="email">Correo electrónico</label>
-                <input type="email" id="email" name="email" required autocomplete="email"
-                       placeholder="correo@espe.edu.ec" />
+                <label for="email">Correo institucional</label>
+                <input type="email" id="email" name="email" required maxlength="150" autocomplete="email" placeholder="usuario@espe.edu.ec" pattern="[a-zA-Z0-9._-]+@espe\.edu\.ec">
             </div>
             <div class="input-group">
                 <label for="phone">Número de teléfono</label>
-                <input type="tel" id="phone" name="phone" required autocomplete="tel"
-                       placeholder="+593 999 999 999" />
+                <input type="tel" id="phone" name="phone" required maxlength="20" autocomplete="tel" placeholder="+593 999 999 999">
             </div>
             <div class="input-group">
                 <label for="gender">Género</label>
@@ -50,20 +43,17 @@
             <div class="input-group">
                 <label for="password">Contraseña</label>
                 <div class="password-wrapper">
-                    <input type="password" id="password" name="password" required
-                           autocomplete="new-password" minlength="6" />
-                    <button type="button" class="toggle-pass" tabindex="-1">&#128065;</button>
+                    <input type="password" id="password" name="password" required minlength="6" maxlength="128" autocomplete="new-password">
+                    <button type="button" class="toggle-pass" tabindex="-1" aria-label="Mostrar u ocultar contraseña">&#128065;</button>
                 </div>
             </div>
             <div class="input-group">
                 <label for="confirm">Confirmar contraseña</label>
                 <div class="password-wrapper">
-                    <input type="password" id="confirm" name="confirm" required
-                           autocomplete="new-password" minlength="6" />
-                    <button type="button" class="toggle-pass" tabindex="-1">&#128065;</button>
+                    <input type="password" id="confirm" name="confirm" required minlength="6" maxlength="128" autocomplete="new-password">
+                    <button type="button" class="toggle-pass" tabindex="-1" aria-label="Mostrar u ocultar contraseña">&#128065;</button>
                 </div>
             </div>
-
             <div class="button-container">
                 <button type="submit" class="btn primary">Registrarme</button>
             </div>
@@ -71,11 +61,14 @@
         </form>
     </main>
     <script>
-        window.sentryOnload = function(){
-            Sentry.init({ environment:'production', release:'espechat@1.0.0', tracesSampleRate:0 });
-        };
+        const params=new URLSearchParams(window.location.search);const error=params.get('error');const errorContainer=document.getElementById('error-msg');if(error&&errorContainer){errorContainer.textContent=error;errorContainer.style.display='block';}
+        document.querySelectorAll('.toggle-pass').forEach(button=>{button.addEventListener('click',()=>{const input=button.parentElement.querySelector('input');input.type=input.type==='password'?'text':'password';});});
+        const avatarInput=document.getElementById('avatar');const avatarPreview=document.getElementById('avatar-preview');avatarInput.addEventListener('change',()=>{const file=avatarInput.files[0];if(!file)return;if(!['image/jpeg','image/png','image/webp'].includes(file.type)){avatarInput.value='';errorContainer.textContent='Solo se permiten imágenes JPG, PNG o WEBP.';errorContainer.style.display='block';return;}if(file.size>2*1024*1024){avatarInput.value='';errorContainer.textContent='La imagen no puede superar 2 MB.';errorContainer.style.display='block';return;}avatarPreview.src=URL.createObjectURL(file);});
+        document.getElementById('register-form').addEventListener('submit',event=>{const password=document.getElementById('password').value;const confirm=document.getElementById('confirm').value;if(password!==confirm){event.preventDefault();errorContainer.textContent='Las contraseñas no coinciden.';errorContainer.style.display='block';}});
+    </script>
+    <script>
+        window.sentryOnload=function(){Sentry.init({environment:'production',release:'espechat@1.0.0',tracesSampleRate:0});};
     </script>
     <script src="https://js.sentry-cdn.com/a2a246199325900c8ee1065ccd0f5714.min.js" crossorigin="anonymous"></script>
-    <script src="js/register.js"></script>
 </body>
 </html>
