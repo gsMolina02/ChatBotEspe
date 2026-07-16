@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const multer = require('multer');
+const rateLimit = require('express-rate-limit');
 const bcrypt = require('bcryptjs');
 const isLoggedIn = require('../middleware/isLoggedIn');
 const { ROOMS } = require('../config/chat.constants');
@@ -38,6 +39,26 @@ function setAuthCookies(res, user) {
     res.cookie('avatar', avatarUrl(user), COOKIE_OPTS);
 }
 
+/* ── Hardening de login: 3 intentos fallidos en 15 minutos por IP ── */
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 3,
+    skipSuccessfulRequests: true,
+    requestWasSuccessful: (req, res) => !res.locals.loginFallido,
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler: (req, res) => {
+        logEvent({
+            accion: 'LOGIN_BLOQUEADO',
+            usuario: (req.body && req.body.email) || 'desconocido',
+            rol: 'anonimo',
+            origen: ORIGENES.MS,
+            detalle: { ip: req.ip, criterio: '3 intentos fallidos en 15 min' }
+        });
+        res.redirect('/login?error=' + encodeURIComponent('Demasiados intentos fallidos. Inténtalo de nuevo en 15 minutos.'));
+    }
+});
+
 /* ── Auth ── */
 
 router.get('/login', (req, res) => {
@@ -45,7 +66,7 @@ router.get('/login', (req, res) => {
     res.sendFile(views + '/login.html');
 });
 
-router.post('/login', express.urlencoded({ extended: false }), async (req, res) => {
+router.post('/login', express.urlencoded({ extended: false }), loginLimiter, async (req, res) => {
     try {
         const { email, password } = req.body;
         if (!email || !password) throw new Error('Completa todos los campos.');
@@ -54,6 +75,7 @@ router.post('/login', express.urlencoded({ extended: false }), async (req, res) 
         logEvent({ accion: 'LOGIN_EXITOSO', usuario: user.username, rol: 'estudiante', origen: ORIGENES.MS, detalle: { email } });
         res.redirect('/rooms');
     } catch (err) {
+        res.locals.loginFallido = true;
         logEvent({ accion: 'LOGIN_FALLIDO', usuario: req.body.email || 'desconocido', rol: 'anonimo', origen: ORIGENES.MS, detalle: { motivo: err.message } });
         res.redirect('/login?error=' + encodeURIComponent(err.message));
     }
