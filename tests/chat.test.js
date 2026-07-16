@@ -23,9 +23,11 @@ describe('ESPEchat - Eventos Socket.IO', () => {
 
     beforeEach((done) => {
         clientA = Client(`http://localhost:${port}`, {
+            path: '/api/v1/stream',
             extraHeaders: { cookie: 'username=Juan' }
         });
         clientB = Client(`http://localhost:${port}`, {
+            path: '/api/v1/stream',
             extraHeaders: { cookie: 'username=Maria' }
         });
 

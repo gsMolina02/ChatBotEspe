@@ -1,4 +1,6 @@
-const socket = io();
+const socket = io({
+    path: '/api/v1/stream'
+});
 
 const send = document.querySelector('#send-message');
 const allMessages = document.querySelector('#all-messages');

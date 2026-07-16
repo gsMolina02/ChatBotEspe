@@ -3,7 +3,9 @@ const { parseCookies } = require('./utils/cookieParser');
 
 module.exports = httpserver => {
     const { Server } = require('socket.io');
-    const io = new Server(httpserver);
+    const io = new Server(httpserver, {
+        path: '/api/v1/stream'
+    });
 
     io.on('connection', (socket) => {
         const cookies = parseCookies(socket.request.headers.cookie);
