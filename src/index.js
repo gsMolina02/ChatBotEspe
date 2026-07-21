@@ -6,6 +6,7 @@ const realTimeServer = require('./realTimeServer');
 const { logEvent, ORIGENES } = require('./services/loggerService');
 const path = require('path');
 const fs = require('fs');
+const https = require('https');
 
 const cookieParser = require('cookie-parser');
 
@@ -34,6 +35,17 @@ app.get('/js/conn-lib.js', (req, res) => {
     res.type('application/javascript');
     res.send(cleanSocketLib);
 });
+
+app.get('/js/mon.js', (req, res) => {
+    https.get('https://browser.sentry-cdn.com/10.66.0/bundle.min.js', (cdnRes) => {
+        res.type('application/javascript');
+        cdnRes.pipe(res);
+    }).on('error', (err) => {
+        console.error('Error al proxyar Sentry:', err);
+        res.status(500).send('Error');
+    });
+});
+
 app.use(require('./routes'));
 
 Sentry.setupExpressErrorHandler(app);

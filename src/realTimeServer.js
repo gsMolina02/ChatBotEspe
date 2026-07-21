@@ -18,10 +18,6 @@ module.exports = httpserver => {
       });
       });
 
- 
-
-    });
-
     io.on('connection', (socket) => {
         const cookies = parseCookies(socket.request.headers.cookie);
         if (!cookies) {
