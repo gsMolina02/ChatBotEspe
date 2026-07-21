@@ -6,16 +6,17 @@ const { setIo } = require('./socket');
 
 module.exports = httpserver => {
     const { Server } = require('socket.io');
-    const io = new Server(httpserver);
-    setIo(io);
+    const io = new Server(httpserver, {
+      path: '/api/v1/stream'});
+        setIo(io);
 
     const reviewsNs = io.of('/reviews');
     reviewsNs.on('connection', (socket) => {
-        socket.on('joinCategory', (category) => {
-            [...socket.rooms].forEach(r => { if (r !== socket.id) socket.leave(r); });
-            socket.join(category);
-        });
-    });
+      socket.on('joinCategory', (category) => {
+        [...socket.rooms].forEach(r => { if (r !== socket.id) socket.leave(r); });
+        socket.join(category);
+      });
+      });
 
     io.on('connection', (socket) => {
         const cookies = parseCookies(socket.request.headers.cookie);

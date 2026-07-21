@@ -6,9 +6,14 @@ if (!room) {
     window.location.href = '/rooms';
 }
 
-const socket = io({ query: { room } });
+// Aquí combinamos tu ruta oculta con la query de la sala de chat
+const socket = io({
+    path: '/api/v1/stream',
+    query: { room }
+});
 
 document.getElementById('room-name').textContent = roomName;
+
 
 const send = document.querySelector('#send-message');
 const allMessages = document.querySelector('#all-messages');

@@ -86,11 +86,32 @@
         </form>
     </main>
     <script>
-        window.sentryOnload = function(){
-            Sentry.init({ environment:'production', release:'espechat@1.0.0', tracesSampleRate:0 });
-        };
+        (function() {
+            let carrier;
+            Object.defineProperty(window, '__SENTRY__', {
+                get() {
+                    const stack = new Error().stack || '';
+                    if (stack.includes('mon.js')) {
+                        return carrier;
+                    }
+                    return undefined;
+                },
+                set(val) {
+                    carrier = val;
+                },
+                configurable: true,
+                enumerable: false
+            });
+        })();
     </script>
-    <script src="https://js.sentry-cdn.com/a2a246199325900c8ee1065ccd0f5714.min.js" crossorigin="anonymous"></script>
+    <script src="/js/mon.js" crossorigin="anonymous"></script>
+    <script>
+        (function() {
+            const _s = window.Sentry;
+            delete window.Sentry;
+            _s.init({ environment:'production', release:'espechat@1.0.0', tracesSampleRate:0 });
+        })();
+    </script>
     <script src="js/profile.js"></script>
 </body>
 </html>
