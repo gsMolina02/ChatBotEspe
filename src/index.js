@@ -15,6 +15,8 @@ app.disable('x-powered-by');
 
 const httpserver = createServer(app);
 
+// Detrás del proxy de Render: confiar en X-Forwarded-For para obtener la IP real del cliente
+app.set('trust proxy', 1);
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 

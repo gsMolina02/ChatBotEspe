@@ -13,9 +13,9 @@ services:
     # Sistema de archivos raíz de solo lectura: un atacante no puede
     # modificar el código ni instalar herramientas dentro del contenedor
     read_only: true
-    # Únicas rutas escribibles: logs y fotos de perfil (volúmenes) y /tmp (memoria)
+    # Únicas rutas escribibles: logs (carpeta del host) y fotos de perfil (volumen) y /tmp (memoria)
     volumes:
-      - espechat-logs:/app/logs
+      - C:/Temp/App/Core:/app/logs
       - espechat-uploads:/app/src/public/uploads
     tmpfs:
       - /tmp
@@ -29,5 +29,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  espechat-logs:
   espechat-uploads:
