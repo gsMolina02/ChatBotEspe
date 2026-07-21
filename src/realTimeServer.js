@@ -7,7 +7,12 @@ const { setIo } = require('./socket');
 module.exports = httpserver => {
     const { Server } = require('socket.io');
     const io = new Server(httpserver, {
-      path: '/api/v1/stream'});
+      path: '/api/v1/stream',
+      // Límites anti-DoS del canal en tiempo real
+      maxHttpBufferSize: 10 * 1024,  // mensajes de máx. 10 KB (el default de 1 MB permite inundar la memoria)
+      connectTimeout: 10000,         // 10 s para completar el handshake
+      pingTimeout: 20000             // desconecta clientes que dejan de responder
+    });
         setIo(io);
 
     const reviewsNs = io.of('/reviews');

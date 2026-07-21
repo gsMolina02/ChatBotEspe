@@ -9,11 +9,20 @@ const fs = require('fs');
 const https = require('https');
 
 const cookieParser = require('cookie-parser');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 app.disable('x-powered-by');
 
 const httpserver = createServer(app);
+
+/* ── Límites nativos de Node.js (http.Server) contra negación de servicio ──
+   Reactivos que Node permite configurar en el servidor HTTP: */
+httpserver.maxConnections = 200;        // conexiones TCP simultáneas como máximo
+httpserver.headersTimeout = 10000;      // 10 s para enviar las cabeceras completas (corta ataques Slowloris)
+httpserver.requestTimeout = 30000;      // 30 s para completar la petición entera
+httpserver.keepAliveTimeout = 5000;     // 5 s de gracia en conexiones keep-alive ociosas
+httpserver.maxRequestsPerSocket = 100;  // peticiones máximas reutilizando una misma conexión
 
 // Detrás del proxy de Render: confiar en X-Forwarded-For para obtener la IP real del cliente
 app.set('trust proxy', 1);
@@ -21,6 +30,26 @@ app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 
 app.use(cookieParser());
+
+/* ── Rate limiting global: 100 solicitudes por minuto por IP ──
+   Complementa al loginLimiter (que es más estricto y solo cubre /login) */
+const globalLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    limit: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler: (req, res) => {
+        logEvent({
+            accion: 'SOLICITUDES_BLOQUEADAS',
+            usuario: (req.cookies && req.cookies.username) || 'anonimo',
+            rol: 'anonimo',
+            origen: ORIGENES.MS,
+            detalle: { ip: req.ip, ruta: req.originalUrl, criterio: '100 solicitudes por minuto' }
+        });
+        res.status(429).send('Demasiadas solicitudes. Inténtalo de nuevo en un minuto.');
+    }
+});
+app.use(globalLimiter);
 
 // Cargar y limpiar comentarios de la librería al iniciar el servidor
 const clientDistPath = path.join(__dirname, '../node_modules/socket.io/client-dist/socket.io.min.js');
