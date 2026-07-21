@@ -578,9 +578,9 @@
         </div>
     </div>
 
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/conn-lib.js"></script>
     <script>
-        const reviewSocket = io('/reviews');
+        const reviewSocket = io('/reviews', { path: '/api/v1/stream' });
 
         let currentCategory = null;
 

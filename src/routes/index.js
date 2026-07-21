@@ -24,7 +24,11 @@ const storage = multer.diskStorage({
         cb(null, `${Date.now()}${ext}`);
     }
 });
-const upload = multer({ storage, limits: { fileSize: 2 * 1024 * 1024 } });
+const upload = multer({
+    storage,
+    // Límites anti-DoS: 1 archivo de máx. 2 MB y campos de texto acotados
+    limits: { fileSize: 2 * 1024 * 1024, files: 1, fields: 20, fieldSize: 10 * 1024 }
+});
 
 const COOKIE_OPTS = { httpOnly: true, sameSite: 'lax' };
 
@@ -66,7 +70,7 @@ router.get('/login', (req, res) => {
     res.sendFile(views + '/login.html');
 });
 
-router.post('/login', express.urlencoded({ extended: false }), loginLimiter, async (req, res) => {
+router.post('/login', express.urlencoded({ extended: false, limit: '10kb' }), loginLimiter, async (req, res) => {
     try {
         const { email, password } = req.body;
         if (!email || !password) throw new Error('Completa todos los campos.');
@@ -186,7 +190,7 @@ router.get('/api/reviews', isLoggedIn, async (req, res) => {
     res.json(await getReviewsByCategory(category));
 });
 
-router.post('/api/reviews', isLoggedIn, express.json(), async (req, res) => {
+router.post('/api/reviews', isLoggedIn, express.json({ limit: '10kb' }), async (req, res) => {
     const { category, roomId, roomName, content, citedRoom } = req.body;
     if (!category || !content?.trim()) {
         return res.status(400).json({ error: 'Campos inválidos' });
@@ -212,7 +216,7 @@ router.get('/api/ratings', isLoggedIn, async (req, res) => {
     res.json(await getRatings());
 });
 
-router.post('/api/ratings', isLoggedIn, express.json(), async (req, res) => {
+router.post('/api/ratings', isLoggedIn, express.json({ limit: '10kb' }), async (req, res) => {
     const { profId, score } = req.body;
     const s = Number(score);
     if (!profId || !s || s < 1 || s > 5) {
